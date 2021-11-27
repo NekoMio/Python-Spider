@@ -7,6 +7,8 @@ from scrapy import signals
 
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
+from scrapy.http import HtmlResponse
+from selenium import webdriver
 
 
 class SpiderSpiderMiddleware:
@@ -71,7 +73,25 @@ class SpiderDownloaderMiddleware:
     def process_request(self, request, spider):
         # Called for each request that goes through the downloader
         # middleware.
-
+        option = webdriver.ChromeOptions()
+        option.add_argument('--headless')
+        option.add_argument('--disable-gpu')
+        option.add_argument('no-sandbox')
+        option.add_argument("disable-blink-features=AutomationControlled")
+        option.add_experimental_option('excludeSwitches', ['enable-automation'])
+        driver = webdriver.Chrome(chrome_options=option)
+        driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+            "source": """
+                Object.defineProperty(navigator, 'webdriver', {
+                    get: () => undefined
+                })
+            """
+        })
+        driver.get(request.url)
+        driver.implicitly_wait(5)
+        html = driver.page_source
+        driver.quit()
+        return HtmlResponse(url=request.url, body=html, request=request, encoding='utf-8')
         # Must either:
         # - return None: continue processing this request
         # - or return a Response object

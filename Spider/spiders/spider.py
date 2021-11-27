@@ -17,10 +17,15 @@ class LianjiaSpider(scrapy.Spider):
                   'https://bj.lianjia.com/ershoufang/haidian/',
                  ]
     
+    def start_requests(self):
+        self.logger.info('start_requests')
+        for url in self.start_urls:
+            yield scrapy.Request(url, callback=self.parse, cb_kwargs={'page': 1})
+    
     def parse(self, response, **kwargs):
         self.logger.info('A response from %s just arrived!, args: %s', response.url, kwargs)
         
-            
+        # base_url = get_base_url(response)
         item = LianjiaItem()
         
         for each in response.xpath("/html/body/div[4]/div[1]/ul/li/div[1]"):
@@ -37,18 +42,13 @@ class LianjiaSpider(scrapy.Spider):
                 self.logger.info('%s %s %s %s', item['name'], item['price'], item['area'], item['unit_price'])
                 yield item
         
-        nowpage_id = kwargs.get('page', 1)
-        if (nowpage_id == 1):
-            next_page = response.url + 'pg2' + '/'
-        else:
-            next_page = response.url.replace('pg' + str(nowpage_id), 'pg' + str(nowpage_id + 1))
-        
+        next_page = response.xpath("/html/body/div[4]/div[1]/div[7]/div[2]/div/a[5]/@href").get()
+        # 
         self.logger.info('next_page: %s', next_page)
         
         
-        
-        if (nowpage_id == 5):
+        if (kwargs.get('page') == 5):
             pass
         else:
-            yield response.follow(next_page, callback=self.parse, cb_kwargs={'page': nowpage_id+1})
+            yield response.follow(next_page, callback=self.parse, cb_kwargs={'page': kwargs.get('page')+1})
         
