@@ -1,3 +1,3 @@
 from scrapy import cmdline
 
-cmdline.execute("scrapy crawl lianjia".split()) # 启动爬虫
+cmdline.execute("scrapy crawl xuetang".split()) # 启动爬虫
