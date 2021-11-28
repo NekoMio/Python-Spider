@@ -7,14 +7,15 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 
-import json
+import csv
 
 
 class SpiderPipeline:
     def open_spider(self, spider):
         try:
-            self.file = open('data.json', 'w', encoding='utf-8')
-            self.result = []
+            self.file = open('data.csv', 'w', encoding='utf-8')
+            self.result = csv.writer(self.file)
+            self.result.writerow(['name', 'teacher', 'school', 'student_num'])
         except Exception as e:
             print(e)
     
@@ -22,10 +23,9 @@ class SpiderPipeline:
         dict_item = ItemAdapter(item).asdict()
         # self.logger.info(dict_item)
         # print(place)
-        self.result.append(dict_item)
+        self.result.writerow(dict_item.values())
         # self.file.write(json_str)
         return item
 
     def close_spider(self, spider):
-        self.file.write(json.dumps(self.result, ensure_ascii=False, indent=4, separators=(',', ': ')))
         self.file.close()
