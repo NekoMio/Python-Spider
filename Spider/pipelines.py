@@ -13,7 +13,7 @@ import csv
 class SpiderPipeline:
     def open_spider(self, spider):
         try:
-            self.file = open('data.csv', 'w', encoding='utf-8')
+            self.file = open('data.csv', 'w', encoding='utf_8_sig')
             self.result = csv.writer(self.file)
             self.result.writerow(['name', 'teacher', 'school', 'student_num'])
         except Exception as e:
