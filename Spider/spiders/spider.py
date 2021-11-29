@@ -42,7 +42,7 @@ class LianjiaSpider(scrapy.Spider):
                 self.logger.info('%s %s %s %s', item['name'], item['price'], item['area'], item['unit_price'])
                 yield item
         
-        next_page = response.xpath("/html/body/div[4]/div[1]/div[7]/div[2]/div/a[5]/@href").get()
+        next_page = response.xpath("/html/body/div[4]/div[1]/div[7]/div[2]/div/a[last()]/@href").get()
         # 
         self.logger.info('next_page: %s', next_page)
         
