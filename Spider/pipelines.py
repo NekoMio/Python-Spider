@@ -21,10 +21,7 @@ class SpiderPipeline:
     
     def process_item(self, item, spider):
         dict_item = ItemAdapter(item).asdict()
-        # self.logger.info(dict_item)
-        # print(place)
         self.result.writerow(dict_item.values())
-        # self.file.write(json_str)
         return item
 
     def close_spider(self, spider):

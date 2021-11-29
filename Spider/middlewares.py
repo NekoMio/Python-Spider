@@ -78,20 +78,7 @@ class SpiderDownloaderMiddleware:
         ffpf.set_preference("intl.accept_languages", "zh-CN")
         option.add_argument('--headless')
         option.add_argument('--disable-gpu')
-        # option.add_argument('no-sandbox')
-        # option.add_argument("disable-blink-features=AutomationControlled")
-        # option.add_argument("lang=zh_CN.UTF-8")
-        # option.add_argument("--lang=zh-CN")
-        # option.add_experimental_option('excludeSwitches', ['enable-automation'])
-        # option.add_experimental_option('prefs', {'intl.accept_languages': 'zh_CN'})
         driver = webdriver.Firefox(firefox_profile=ffpf, options=option)
-        # driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
-        #     "source": """
-        #         Object.defineProperty(navigator, 'webdriver', {
-        #             get: () => undefined
-        #         })
-        #     """
-        # })
         driver.get(request.url)
         driver.implicitly_wait(5)
         html = driver.page_source
